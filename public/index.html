@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    // Briefly reset a restored pinch scale on a new page load, then allow zoom.
+    (() => {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      const normalViewport = 'width=device-width, initial-scale=1.0';
+      viewport.content = normalViewport + ', minimum-scale=1.0, maximum-scale=1.0';
+      const allowZoom = () => {
+        window.setTimeout(() => { viewport.content = normalViewport; }, 150);
+      };
+      window.addEventListener('load', allowZoom, { once: true });
+      // Do not leave zoom restricted if other page resources are slow to load.
+      window.setTimeout(() => { viewport.content = normalViewport; }, 1500);
+    })();
+  </script>
+  <title>Leman – Shittim Chest Profile</title>
+  <meta name="description"
+    content="Hồ sơ realtime của Leman – Shittim Chest profile" />
+  <meta name="keywords" content="Leman, lập trình, Discord bot, anime, profile, portfolio" />
+  <meta name="author" content="Leman" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <link rel="canonical" href="https://kotori.click/" />
+  <meta name="theme-color" content="#070a15" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kotori.click/" />
+  <meta property="og:site_name" content="Shittim Chest Profile" />
+  <meta property="og:title" content="Leman – Shittim Chest Profile" />
+  <meta property="og:description"
+    content="Hồ sơ realtime của Leman – Discord và Spotify presence." />
+  <meta property="og:image" content="https://kotori.click/data/preview.jpg?v=plana-20261007" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Leman – Shittim Chest Profile" />
+  <meta name="twitter:description"
+    content="Hồ sơ realtime của Leman – Discord và Spotify presence." />
+  <meta name="twitter:image" content="https://kotori.click/data/preview.jpg?v=plana-20261007" />
+
+  <!-- Google & Browser Favicons -->
+  <link rel="icon" type="image/x-icon" href="./data/favicon/favicon.ico?v=plana" />
+  <link rel="icon" type="image/png" sizes="48x48" href="./data/favicon/favicon-48.png?v=plana" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./data/favicon/favicon-192.png?v=plana" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./data/favicon/apple-touch-icon.png?v=plana" />
+
+  <!-- Structured Data: WebSite & ProfilePage (Schema.org JSON-LD for Google Rich Snippets) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://kotori.click/#website",
+        "url": "https://kotori.click/",
+        "name": "Shittim Chest Profile",
+        "alternateName": ["Leman", "Shittim Chest", "SCHALE Profile"],
+        "description": "Hồ sơ realtime của Leman",
+        "inLanguage": "vi"
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://kotori.click/#profilepage",
+        "url": "https://kotori.click/",
+        "name": "Leman – Bio",
+        "isPartOf": { "@id": "https://kotori.click/#website" },
+        "mainEntity": {
+          "@type": "Person",
+          "@id": "https://kotori.click/#author",
+          "name": "Leman",
+          "alternateName": "lemanh1231",
+          "url": "https://kotori.click/",
+          "image": "https://kotori.click/data/preview.jpg?v=plana-20261007",
+          "sameAs": [
+            "https://github.com/Lemanh1231",
+            "https://steamcommunity.com/profiles/76561199152907397/",
+            "https://www.youtube.com/",
+            "https://x.com/",
+            "https://discord.com/users/1027893420594831413"
+          ]
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://i.scdn.co" />
+  <link rel="dns-prefetch" href="https://i.scdn.co" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=20261123-panel-switch-v4" />
+
+</head>
+
+<body class="terminal-active">
+  <div id="background-next" aria-hidden="true"></div>
+  <div id="pointer-glow" class="pointer-glow" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <main id="app-root">
+    <section id="terminal-screen" class="screen terminal-screen active" data-nosnippet aria-label="Shittim Chest OS terminal intro">
+      <div class="terminal-warp-aura" aria-hidden="true"></div>
+      <div class="terminal-warp-flash" aria-hidden="true"></div>
+      <div class="cmd-window">
+        <div class="cmd-titlebar">
+          <div id="cmd-tabs" class="cmd-tabs" role="tablist" aria-label="CMD tabs"></div>
+          <button id="cmd-new-tab" class="cmd-plus" type="button" aria-label="Mở tab Kivotos Terminal" title="Mở Kivotos Terminal">+</button>
+          <div class="cmd-controls" aria-label="Điều khiển cửa sổ">
+            <button type="button" class="cmd-ctrl-btn cmd-ctrl-min" aria-label="Thu nhỏ" title="Thu nhỏ (Profile)">—</button>
+            <button type="button" class="cmd-ctrl-btn cmd-ctrl-max" aria-label="Phóng to" title="Phóng to / Thu nhỏ">□</button>
+            <button type="button" class="cmd-ctrl-btn cmd-ctrl-close" aria-label="Đóng" title="Đóng (Profile)">×</button>
+          </div>
+        </div>
+        <div class="cmd-body">
+          <div class="cmd-hud-bar">
+            <span class="hud-item"><span class="hud-label">HOST:</span> SCHALE-MAINFRAME</span>
+            <span class="hud-item"><span class="hud-label">ENC:</span> <span class="hud-enc-badge">PEREZ-UZZAH</span></span>
+            <span class="hud-item hud-sync"><span class="hud-dot"></span> <span class="hud-linked-text">ARONA &amp; PLANA LINKED</span></span>
+          </div>
+          <div id="cmd-log" class="cmd-log" aria-live="polite"></div>
+          <form id="cmd-form" class="cmd-prompt-line" autocomplete="off">
+            <span id="cmd-prompt-user" style="color: #35e8ff; font-weight: 700;">sensei@shittim-chest:~$</span>
+            <input id="cmd-input" type="text" autocomplete="off" spellcheck="false" aria-label="CMD command input" />
+          </form>
+          <button id="enter-console-btn" class="cmd-continue" type="button">
+            <span class="btn-shimmer" aria-hidden="true"></span>
+            <span class="btn-content">
+              <span class="btn-icon">💠</span>
+              <span class="btn-text">AUTHENTICATE IDENTITY // SENSEI</span>
+            </span>
+            <span class="btn-subtext">[ PRESS ENTER OR CLICK TO ENTER SCHALE OFFICE ]</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile-screen" class="screen profile-screen" aria-label="Trang hồ sơ chính">
+      <article class="profile-console glass-panel collapsed">
+        <!-- BEGIN: Left Profile Column -->
+        <aside class="profile-left-col" aria-label="Thông tin chính">
+          <div class="profile-fixed-top">
+            <div class="profile-banner">
+              <img id="banner-image" src="./data/banner.jpg?v=plana-schale-20261007"
+                alt="Ảnh bìa hồ sơ" />
+              <div class="banner-glow"></div>
+            </div>
+
+            <div class="profile-header">
+              <div class="avatar-wrap">
+                <img id="avatar-image" class="avatar-image avatar-glow" src="" alt="Ảnh đại diện Discord" />
+                <div id="avatar-fallback" class="avatar-fallback">T</div>
+                <img id="avatar-decoration" class="avatar-decoration" src="./data/decoration/anime-nani.png"
+                  alt="Trang trí avatar" />
+                <span id="status-orb" class="status-orb offline" aria-label="Trạng thái Discord"></span>
+              </div>
+
+              <div class="custom-status-pill" title="Custom status">
+                <span id="custom-status-line">Shittim Chest // Online</span>
+              </div>
+
+              <span id="last-updated" class="sync-clock">VN --:--:--</span>
+            </div>
+
+            <div class="identity-section">
+              <h1 id="display-name"><span id="profile-typing-name" class="profile-typing-name">Leman</span><span class="profile-typing-cursor" aria-hidden="true">|</span></h1>
+              <div class="handle-bar">
+                <span class="username">@<span id="username">lemanh1231</span></span>
+                <span class="dot-sep">•</span>
+                <span id="clan-badge" class="server-badge" title="Clan Tag"><img id="clan-badge-icon" class="clan-badge-icon" src="" alt="Clan" style="display:none;" /><span id="clan-badge-tag">KFS</span></span>
+                <button id="client-platform-btn" class="client-platform-btn" type="button" title="Nền tảng Discord">
+                  <svg viewBox="0 0 24 24" width="8" height="8" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="#80848e"/></svg>
+                  <span id="client-platform-text">Đang kết nối...</span>
+                </button>
+              </div>
+              <p id="status-text" class="status-subtext" hidden><span class="inline-dot offline"></span>Đang kết nối Discord...</p>
+            </div>
+
+            <div id="public-flags" class="badge-list" aria-label="Huy hiệu hồ sơ"></div>
+
+            <div class="profile-actions-row">
+              <a id="telegram-link" class="btn-primary-action" href="https://discord.com/users/1027893420594831413" target="_blank" rel="noopener noreferrer" title="Nhắn tin qua Discord">
+                <span>Tin nhắn</span>
+              </a>
+              <a id="discord-user-profile" class="btn-icon-action" href="https://discord.com/users/1027893420594831413" target="_blank" rel="noopener noreferrer" aria-label="Hồ sơ Discord" title="Hồ sơ Discord">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+              </a>
+              <button id="panelToggleBtn" class="btn-icon-action panel-toggle-btn is-collapsed" type="button" aria-label="Mở rộng bảng" title="Mở rộng bảng">
+                <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="15" y1="3" x2="15" y2="21"/>
+                  <polyline id="toggleChevron" points="11 9 8 12 11 15"/>
+                </svg>
+              </button>
+            </div>
+
+            <hr class="col-divider" />
+          </div>
+
+          <div class="profile-scroll-body">
+            <div class="info-section">
+              <div class="section-label">Tiểu sử</div>
+              <p class="bio-text">Một lập trình viên thích nghe nhạc lúc nửa đêm, sống ở ranh giới giữa thực tại và những thế giới ảo.</p>
+              <div class="tags" aria-label="Thẻ hồ sơ">
+                <span>Anime</span>
+                <span>Music</span>
+                <span>HSR</span>
+                <span>Coder</span>
+                <span>Cheater</span>
+              </div>
+            </div>
+
+            <div class="info-section">
+              <div class="section-label">Kết Nối</div>
+              <div class="connections-list">
+                <a class="conn-item" href="https://github.com/Lemanh1231" target="_blank" rel="noopener noreferrer">
+                  <span class="conn-left"><span class="conn-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span><span class="conn-name">GitHub</span></span>
+                  <svg class="conn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </a>
+                <a class="conn-item" href="https://steamcommunity.com/profiles/76561199152907397/" target="_blank" rel="noopener noreferrer">
+                  <span class="conn-left"><span class="conn-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 14.819C1.854 20.061 6.64 24 12.33 24c6.627 0 12-5.373 12-12S18.605 0 11.979 0zM7.54 18.216l-1.467-.606c.266.604.8 1.053 1.455 1.197.87.191 1.748-.344 1.956-1.193.107-.435.031-.876-.184-1.229a2.08 2.08 0 0 0-.845-.758c-.144-.069-.297-.115-.458-.135a2.034 2.034 0 0 0-.465.014c-.66.1-1.218.525-1.468 1.135l1.476.609c-.006.27-.229.489-.508.466-.2-.016-.363-.169-.396-.367l.006-.007a.498.498 0 0 1 .496-.465c.074 0 .144.017.207.047l-.004-.002a.498.498 0 0 1 .288.448c0 .275-.224.498-.499.498a.5.5 0 0 1-.05-.005zm8.4-11.55c-1.246 0-2.26 1.012-2.26 2.257 0 1.247 1.014 2.26 2.26 2.26 1.248 0 2.26-1.013 2.26-2.26 0-1.245-1.012-2.257-2.26-2.257zm0 3.633c-.76 0-1.373-.615-1.373-1.376 0-.759.613-1.374 1.373-1.374.759 0 1.374.615 1.374 1.374 0 .761-.615 1.376-1.374 1.376z"/></svg></span><span class="conn-name">Steam</span></span>
+                  <svg class="conn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <!-- END: Left Profile Column -->
+
+        <!-- BEGIN: Right Widgets Column -->
+        <div id="rightPanelContainer" class="right-panel-container collapsed">
+          <div class="subsystem-topline"></div>
+          <!-- Mobile Sheet Header -->
+          <div class="mobile-panel-header">
+            <div class="mobile-drag-handle"></div>
+            <div class="mobile-header-bar">
+              <div class="mobile-header-title">
+                <span class="mobile-header-flower">✦</span>
+                <span class="mobile-header-pulse"></span>
+                <span class="mobile-header-text">SHITTIM CHEST // SUBSYSTEMS</span>
+                <span class="mobile-header-badge">OS v2.4</span>
+              </div>
+              <button id="closeMobilePanelBtn" class="mobile-panel-close-btn" type="button" aria-label="Đóng bảng" title="Đóng bảng">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <main class="right-widgets-inner" aria-label="Nội dung chi tiết">
+            <!-- Navigation Tabs -->
+            <nav class="widgets-nav-tabs" role="tablist">
+              <button class="nav-tab-btn active" data-tab="board" type="button" role="tab" aria-selected="true">
+                <span class="nav-tab-icon">❖</span>
+                <span>Bảng</span>
+                <span class="tab-indicator"></span>
+              </button>
+              <button class="nav-tab-btn" data-tab="activity" type="button" role="tab" aria-selected="false">
+                <span class="nav-tab-icon">⚡</span>
+                <span>Hoạt động</span>
+                <span class="tab-indicator"></span>
+              </button>
+              <button class="nav-tab-btn" data-tab="bot" type="button" role="tab" aria-selected="false">
+                <span class="nav-tab-icon">🎵</span>
+                <span>Discord Bot</span>
+                <span class="tab-indicator"></span>
+              </button>
+            </nav>
+
+            <!-- TAB 1: Bảng (Dashboard) -->
+            <div id="tab-board" class="tab-content active" role="tabpanel">
+              <!-- Featured Showcase Card -->
+              <div class="featured-showcase-card">
+                <div class="showcase-decor-corner tl"></div>
+                <div class="showcase-decor-corner br"></div>
+                <div class="showcase-info">
+                  <div class="showcase-tag">
+                    <span class="tag-pulse"></span>
+                    <span class="tag-ico">🌸</span>
+                    <span>OPERATOR // PLANA</span>
+                  </div>
+                  <h3 class="showcase-name">Leman</h3>
+                  <div class="showcase-meta">
+                    <span class="showcase-handle">@lemanh1231</span>
+                    <a class="showcase-link" href="https://github.com/Lemanh1231" target="_blank" rel="noopener noreferrer">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                      <span>github.com/Lemanh1231</span>
+                    </a>
+                  </div>
+                  <p class="showcase-quote">
+                    <span class="quote-line"></span>
+                    <span>Chuyên viên vận hành Shittim Chest 🌸💜</span>
+                  </p>
+                </div>
+                <div class="showcase-art-wrap" aria-hidden="true">
+                  <img class="showcase-art" src="./data/showcase.jpg" alt="Plana Showcase" loading="lazy" decoding="async" />
+                  <div class="showcase-art-overlay"></div>
+                </div>
+              </div>
+
+              <!-- Widgets / Apps Grid -->
+              <div class="widgets-header">
+                <div class="widgets-header-title-wrap">
+                  <span class="widgets-title-indicator"></span>
+                  <h2 class="widgets-title">Widget của Bạn</h2>
+                  <span class="widgets-title-code">// APPS</span>
+                </div>
+                <span class="widgets-counter">04 TOTAL</span>
+              </div>
+              <div class="apps-grid">
+                <div class="app-card">
+                  <div class="app-icon-wrap zzz">
+                    <img src="./data/games/zenless-zone-zero.png?v=2" alt="Zenless Zone Zero" />
+                  </div>
+                  <div class="app-text">
+                    <strong class="app-title">Zenless Zone Zero</strong>
+                    <span class="app-detail"><span class="app-badge">UID</span> 1303235682</span>
+                  </div>
+                </div>
+
+                <div class="app-card">
+                  <div class="app-icon-wrap hsr">
+                    <img src="./data/games/honkai-star-rail.png?v=2" alt="Honkai: Star Rail" />
+                  </div>
+                  <div class="app-text">
+                    <strong class="app-title">Honkai: Star Rail</strong>
+                    <span class="app-detail"><span class="app-badge">UID</span> 840250395</span>
+                  </div>
+                </div>
+
+                <div class="app-card" onclick="window.open('https://hentaiz.to', '_blank')">
+                  <div class="app-icon-wrap study">
+                    <img src="./data/games/hentaiz.png" alt="Học Tập" />
+                  </div>
+                  <div class="app-text">
+                    <strong class="app-title">Học Tập</strong>
+                    <span class="app-detail"><span class="app-badge">CAT</span> 210</span>
+                  </div>
+                </div>
+                <a class="app-card" href="https://vi-hentai.pro" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
+                  <div class="app-icon-wrap study">
+                    <img src="https://vi-hentai.pro/favicon.ico" alt="Học Tập" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='./data/games/hentaiz.png';" />
+                  </div>
+                  <div class="app-text">
+                    <strong class="app-title">Học Tập</strong>
+                    <span class="app-detail"><span class="app-badge">MANGA</span> Truyện</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- TAB 2: Hoạt động (Realtime Activities) -->
+            <div id="tab-activity" class="tab-content" role="tabpanel">
+              <div id="activities-list" class="activities-list" aria-live="polite">
+                <section id="spotify-activity-card" class="activity-card spotify-activity-card hidden" aria-labelledby="spotify-activity-title">
+                  <div class="activity-media spotify-media">
+                    <img id="spotify-art" class="activity-art" src="" alt="Ảnh bìa Spotify" />
+                    <div id="spotify-art-fallback" class="activity-icon spotify-icon-fallback" aria-hidden="true">♪</div>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-kicker"><span class="spotify-dot"></span>Spotify Realtime</div>
+                    <h2 id="spotify-activity-title" class="activity-title">Đang nghe nhạc</h2>
+                    <p id="spotify-artist" class="activity-detail activity-artist"></p>
+                    <p id="spotify-album" class="activity-detail activity-album"></p>
+                    <div class="spotify-progress" aria-label="Tiến trình bài hát">
+                      <div class="spotify-progress-track"><span id="spotify-progress-fill"></span></div>
+                      <div class="spotify-progress-time"><span id="spotify-current-time">0:00</span><span id="spotify-total-time">0:00</span></div>
+                    </div>
+                  </div>
+                </section>
+
+                <section id="game-activity-card" class="activity-card game-activity-card hidden" aria-labelledby="game-activity-title">
+                  <div class="activity-media game-media">
+                    <img id="game-art" class="activity-art" src="" alt="Ảnh hoạt động" />
+                    <div id="game-art-fallback" class="activity-icon game-icon-fallback" aria-hidden="true">🎮</div>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-kicker"><span class="activity-kicker-icon">✦</span><span id="game-activity-type">Hoạt động</span></div>
+                    <h2 id="game-activity-title" class="activity-title">Hoạt động đang chạy</h2>
+                    <p id="game-activity-detail" class="activity-detail"></p>
+                    <p id="game-activity-state" class="activity-detail"></p>
+                    <p id="game-activity-time" class="activity-time"></p>
+                    <div id="game-music-progress" class="spotify-progress hidden" aria-label="Tiến trình bài hát">
+                      <div class="spotify-progress-track"><span id="game-music-fill"></span></div>
+                      <div class="spotify-progress-time"><span id="game-music-current">0:00</span><span id="game-music-total">0:00</span></div>
+                    </div>
+                  </div>
+                </section>
+
+                <div id="activities-empty" class="activities-empty">
+                  <div class="radar-scan-box">
+                    <div class="radar-wave wave-1"></div>
+                    <div class="radar-wave wave-2"></div>
+                    <div class="radar-center">✦</div>
+                  </div>
+                  <div class="activities-empty-info">
+                    <span class="activities-empty-status">[ TELEMETRY // IDLE ]</span>
+                    <strong class="activities-empty-heading">Chưa có hoạt động realtime</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+<!-- TAB 3: Discord Music Bot -->
+            <div id="tab-bot" class="tab-content" role="tabpanel">
+              <!-- Bot Header HUD -->
+              <div class="bot-header-hud">
+                <div class="bot-header-title-wrap">
+                  <span class="bot-header-bar-indicator"></span>
+                  <h3 id="bot-page-title" class="bot-page-title">DISCORD AUDIO DRONE</h3>
+                  <span class="bot-header-code">// SUB-03</span>
+                </div>
+                <div class="bot-header-badge-wrap">
+                  <span class="bot-pulse-beacon"></span>
+                  <span class="bot-live-tag">LIVE TELEMETRY</span>
+                </div>
+              </div>
+
+              <!-- Bot Hero Profile Card with Full Visible Banner -->
+              <div class="bot-hero">
+                <!-- Top Full-Width Banner -->
+                <div class="bot-banner-wrap">
+                  <img id="bot-banner-img" class="bot-banner-img" src="./data/bot-banner.jpg?v=plana-arona-face-v4" alt="Bot Banner" />
+                  <div class="bot-banner-overlay"></div>
+                  <div class="bot-decor-corner tl"></div>
+                  <div class="bot-decor-corner tr"></div>
+                </div>
+
+                <!-- Bot Profile Body below Banner -->
+                <div class="bot-profile-body">
+                  <div class="bot-avatar-row">
+                    <div class="bot-avatar-wrap">
+                      <div class="bot-avatar-halo"></div>
+                      <img id="bot-avatar" class="bot-avatar" src="" alt="Bot avatar">
+                      <span id="bot-status-dot" class="bot-status-dot offline"></span>
+                    </div>
+
+                    <div class="bot-actions-inline">
+                      <a id="bot-invite-link" class="invite-btn disabled" href="#" target="_blank" rel="noopener noreferrer" title="Mời Bot vào Discord Server">
+                        <svg class="discord-cta-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                        <span>Mời Bot</span>
+                        <span class="invite-arrow">→</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="bot-hero-info">
+                    <div class="bot-kicker-row">
+                      <span id="bot-status-text" class="bot-kicker">Đang kết nối API...</span>
+                      <div class="bot-updated-pill">
+                        <span class="update-pulse-dot"></span>
+                        <span id="bot-updated-at" class="bot-note">Chưa cập nhật</span>
+                      </div>
+                    </div>
+                    <h3 id="bot-display-name">Plana_music</h3>
+                    <div class="bot-custom-status-wrap">
+                      <span id="bot-activity-icon" class="bot-activity-icon" aria-hidden="true">
+                        <span class="bot-audio-eq-wave">
+                          <span></span><span></span><span></span>
+                        </span>
+                      </span>
+                      <p id="bot-custom-status">Đang lấy thông tin bot...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bot Telemetry Metrics Grid -->
+              <div class="bot-live-grid" aria-label="Music bot live stats">
+                <article class="stat-card">
+                  <div class="stat-meta">
+                    <span class="stat-icon">📶</span>
+                    <span class="stat-name">PING</span>
+                  </div>
+                  <strong id="bot-ping" class="stat-value">--ms</strong>
+                </article>
+
+                <article class="stat-card">
+                  <div class="stat-meta">
+                    <span class="stat-icon">🌐</span>
+                    <span class="stat-name">SERVERS</span>
+                  </div>
+                  <strong id="bot-servers" class="stat-value">--</strong>
+                </article>
+
+                <article class="stat-card">
+                  <div class="stat-meta">
+                    <span class="stat-icon">🎧</span>
+                    <span class="stat-name">STREAMING</span>
+                  </div>
+                  <strong id="bot-playing" class="stat-value">-- phòng</strong>
+                </article>
+
+                <article class="stat-card">
+                  <div class="stat-meta">
+                    <span class="stat-icon">🔊</span>
+                    <span class="stat-name">VOICE ROOMS</span>
+                  </div>
+                  <strong id="bot-connected" class="stat-value">-- phòng</strong>
+                </article>
+
+                <article class="stat-card wide">
+                  <div class="stat-meta">
+                    <span class="stat-icon">⏱️</span>
+                    <span class="stat-name">SYSTEM RUNTIME</span>
+                  </div>
+                  <strong id="bot-runtime" class="stat-value">--</strong>
+                </article>
+
+                <article class="stat-card wide">
+                  <div class="stat-meta">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-name">LAVALINK CORE</span>
+                  </div>
+                  <strong id="bot-lavalink" class="stat-value">--</strong>
+                </article>
+              </div>
+
+              <!-- Feature Highlights Grid -->
+              <div class="bot-feature-grid">
+                <article class="feature-card">
+                  <span class="feature-chip">01 // MUSIC-FIRST</span>
+                  <strong>Chất lượng âm thanh High-Fidelity</strong>
+                  <p>Hỗ trợ stream nhạc chất lượng cao, độ trễ thấp và bộ đệm âm thanh tối ưu.</p>
+                </article>
+                <article class="feature-card">
+                  <span class="feature-chip">02 // REALTIME TELEMETRY</span>
+                  <strong>Đồng bộ chỉ số trực tiếp</strong>
+                  <p>Trạng thái kết nối, số phòng và độ trễ được đồng bộ theo thời gian thực từ Bot Core.</p>
+                </article>
+                <article class="feature-card">
+                  <span class="feature-chip">03 // SERVER SAFEGUARD</span>
+                  <strong>Uptime 24/7 & Ổn định</strong>
+                  <p>Hệ thống tự động phục hồi kết nối, quản lý phân quyền an toàn cho Discord Server.</p>
+                </article>
+              </div>
+            </div>
+          </main>
+          <!-- Subsystem Terminal Footer -->
+          <footer class="subsystem-footer" aria-hidden="true">
+            <div class="subsystem-footer-left">
+              <span class="subsystem-footer-dot"></span>
+              <span class="subsystem-footer-text">SCHALE KIVOTOS TERMINAL // ALL SUBSYSTEMS NOMINAL</span>
+            </div>
+            <span class="subsystem-footer-badge">SYS: OK</span>
+          </footer>
+        </div>
+        <!-- END: Right Widgets Column -->
+      </article>
+      <section class="music-dock" id="music-dock" aria-label="Nhạc nền">
+        <div class="music-dock-topline"></div>
+        <audio id="site-music" src="/data/music/lovely-picnic.m4a" preload="none"></audio>
+
+        <!-- Vinyl / Halo Disc Cover -->
+        <div class="music-disc-wrap" id="music-disc-wrap" title="Blue Archive Disc Player">
+          <div class="music-disc-halo"></div>
+          <div class="music-disc">
+            <img id="music-cover" src="/data/music/lovely-picnic.webp" alt="Bìa Lovely Picnic" width="52" height="52" />
+            <div class="music-disc-center"></div>
+          </div>
+        </div>
+
+        <!-- Track Info & Sound Visualizer -->
+        <div class="music-dock-main">
+          <div class="music-meta-row">
+            <div class="music-meta-info">
+              <span class="music-kicker"><span class="music-status-dot"></span><span id="music-status-badge">SCHALE AUDIO // ONLINE</span></span>
+              <strong class="music-title-wrap">
+                <span id="music-title">Lovely Picnic</span>
+                <span id="music-artist">Blue Archive OST 4</span>
+              </strong>
+            </div>
+
+            <!-- 5-bar Sound Wave Visualizer -->
+            <div class="music-equalizer" id="music-equalizer" aria-hidden="true" title="Audio Spectrum">
+              <span class="eq-bar eq-bar-1"></span>
+              <span class="eq-bar eq-bar-2"></span>
+              <span class="eq-bar eq-bar-3"></span>
+              <span class="eq-bar eq-bar-4"></span>
+              <span class="eq-bar eq-bar-5"></span>
+            </div>
+          </div>
+
+          <!-- Futuristic Neon Seek Timeline -->
+          <div class="music-timeline">
+            <span id="music-elapsed">0:00</span>
+            <div class="music-seek-container">
+              <div class="music-seek-track">
+                <div class="music-seek-fill" id="music-seek-fill"></div>
+              </div>
+              <input id="music-seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Tiến độ bài hát" />
+            </div>
+            <span id="music-length">--:--</span>
+          </div>
+          <small id="music-notice" role="status" hidden></small>
+        </div>
+
+        <!-- Controls: Prev, Play/Pause, Next, Volume -->
+        <div class="music-controls">
+          <button id="music-prev" class="music-btn" type="button" aria-label="Bài trước" title="Bài trước">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+          </button>
+          <button id="music-toggle" class="music-btn music-btn-play" type="button" aria-label="Phát nhạc" title="Phát / Dừng">
+            <svg id="music-icon-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>
+            <svg id="music-icon-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <button id="music-next" class="music-btn" type="button" aria-label="Bài tiếp theo" title="Bài tiếp theo">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+
+          <!-- Volume Controls -->
+          <div class="music-volume-group">
+            <button id="music-vol-btn" class="music-btn music-vol-btn" type="button" aria-label="Âm lượng" title="Bật / Tắt âm">
+              <svg id="music-vol-icon-on" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+              <svg id="music-vol-icon-mute" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+            </button>
+            <div class="music-vol-slider-wrap">
+              <input id="music-volume" type="range" min="0" max="1" step="0.05" value="0.5" aria-label="Mức âm lượng" />
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Mobile Panel Backdrop -->
+      <div id="mobilePanelBackdrop" class="mobile-panel-backdrop"></div>
+    </section>
+  </main>
+
+  <script src="script.js?v=20261123-panel-switch-v4" ></script>
+</body>
+
+</html>

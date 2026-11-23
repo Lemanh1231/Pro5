@@ -1,0 +1,36 @@
+# Private originals, diagnostic/config snapshots and backups
+/media/music-source/
+/backups/
+/config/*.before
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.DS_Store
+
+# Only Pro5 belongs in this repository.
+/public/apps/
+/public/lavalink-status
+/public/gg-studio-preview-01
+/public/assets/images/
+/public/discord*.jpg
+/public/bot-banner.jpg
+/public/data/images/bot-banner-custom.jpg
+/public/data/images/bot-showcase-avatar.png
+/public/data/bot-banner-custom.jpg
+/public/data/bot-showcase-avatar.png
+/public/data/background/bg.png
+/config/
+/README.local.md
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+*.bak*
+node_modules/
+
+# Published music is optional, generated locally; do not upload it by default.
+/public/data/music/*
+!/public/data/music/.gitkeep
