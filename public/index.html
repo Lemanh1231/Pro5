@@ -98,7 +98,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261123-panel-switch-v4" />
+  <link rel="stylesheet" href="styles.css?v=20261124-source-clean-v21" />
 
 </head>
 
@@ -261,17 +261,32 @@
             <!-- Navigation Tabs -->
             <nav class="widgets-nav-tabs" role="tablist">
               <button class="nav-tab-btn active" data-tab="board" type="button" role="tab" aria-selected="true">
-                <span class="nav-tab-icon">❖</span>
+                <span class="nav-tab-icon">
+                  <svg class="tab-svg-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="4.8" height="4.8" rx="1.2"/>
+                    <rect x="9.2" y="2" width="4.8" height="4.8" rx="1.2"/>
+                    <rect x="2" y="9.2" width="4.8" height="4.8" rx="1.2"/>
+                    <rect x="9.2" y="9.2" width="4.8" height="4.8" rx="1.2"/>
+                  </svg>
+                </span>
                 <span>Bảng</span>
                 <span class="tab-indicator"></span>
               </button>
               <button class="nav-tab-btn" data-tab="activity" type="button" role="tab" aria-selected="false">
-                <span class="nav-tab-icon">⚡</span>
+                <span class="nav-tab-icon">
+                  <svg class="tab-svg-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1.5 8.5h3l2-5 3 9 2-4h3"/>
+                  </svg>
+                </span>
                 <span>Hoạt động</span>
                 <span class="tab-indicator"></span>
               </button>
               <button class="nav-tab-btn" data-tab="bot" type="button" role="tab" aria-selected="false">
-                <span class="nav-tab-icon">🎵</span>
+                <span class="nav-tab-icon tab-icon-discord">
+                  <svg class="tab-svg-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                  </svg>
+                </span>
                 <span>Discord Bot</span>
                 <span class="tab-indicator"></span>
               </button>
@@ -312,13 +327,13 @@
               <div class="widgets-header">
                 <div class="widgets-header-title-wrap">
                   <span class="widgets-title-indicator"></span>
-                  <h2 class="widgets-title">Widget của Bạn</h2>
+                  <h2 class="widgets-title">Widget</h2>
                   <span class="widgets-title-code">// APPS</span>
                 </div>
                 <span class="widgets-counter">04 TOTAL</span>
               </div>
               <div class="apps-grid">
-                <div class="app-card">
+                <a class="app-card" href="https://enka.network/u/lemanh1231/4fkLeJ/1501/7347325/" target="_blank" rel="noopener noreferrer">
                   <div class="app-icon-wrap zzz">
                     <img src="./data/games/zenless-zone-zero.png?v=2" alt="Zenless Zone Zero" />
                   </div>
@@ -326,9 +341,9 @@
                     <strong class="app-title">Zenless Zone Zero</strong>
                     <span class="app-detail"><span class="app-badge">UID</span> 1303235682</span>
                   </div>
-                </div>
+                </a>
 
-                <div class="app-card">
+                <a class="app-card" href="https://enka.network/u/lemanh1231/2rJjD4/1015/7347355/" target="_blank" rel="noopener noreferrer">
                   <div class="app-icon-wrap hsr">
                     <img src="./data/games/honkai-star-rail.png?v=2" alt="Honkai: Star Rail" />
                   </div>
@@ -336,7 +351,7 @@
                     <strong class="app-title">Honkai: Star Rail</strong>
                     <span class="app-detail"><span class="app-badge">UID</span> 840250395</span>
                   </div>
-                </div>
+                </a>
 
                 <div class="app-card" onclick="window.open('https://hentaiz.to', '_blank')">
                   <div class="app-icon-wrap study">
@@ -382,7 +397,11 @@
                 <section id="game-activity-card" class="activity-card game-activity-card hidden" aria-labelledby="game-activity-title">
                   <div class="activity-media game-media">
                     <img id="game-art" class="activity-art" src="" alt="Ảnh hoạt động" />
-                    <div id="game-art-fallback" class="activity-icon game-icon-fallback" aria-hidden="true">🎮</div>
+                    <div id="game-art-fallback" class="activity-icon game-icon-fallback" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 12h4m-2-2v4M15 11h.01M18 13h.01M17.5 7H6.5C4.01 7 2 9.01 2 11.5c0 3.2 2.3 6.5 5 6.5 1.5 0 2.5-1 3.5-1h3c1 0 2 1 3.5 1 2.7 0 5-3.3 5-6.5C22 9.01 19.99 7 17.5 7z"/>
+                      </svg>
+                    </div>
                   </div>
                   <div class="activity-content">
                     <div class="activity-kicker"><span class="activity-kicker-icon">✦</span><span id="game-activity-type">Hoạt động</span></div>
@@ -417,6 +436,9 @@
               <div class="bot-header-hud">
                 <div class="bot-header-title-wrap">
                   <span class="bot-header-bar-indicator"></span>
+                  <svg class="bot-header-discord-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                  </svg>
                   <h3 id="bot-page-title" class="bot-page-title">DISCORD AUDIO DRONE</h3>
                   <span class="bot-header-code">// SUB-03</span>
                 </div>
@@ -481,7 +503,15 @@
               <div class="bot-live-grid" aria-label="Music bot live stats">
                 <article class="stat-card">
                   <div class="stat-meta">
-                    <span class="stat-icon">📶</span>
+                    <span class="stat-icon icon-ping">
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1.5 13.5h13"/>
+                        <path d="M3.5 10.5v3"/>
+                        <path d="M6.5 8v5.5"/>
+                        <path d="M9.5 5.5v8"/>
+                        <path d="M12.5 3v10.5"/>
+                      </svg>
+                    </span>
                     <span class="stat-name">PING</span>
                   </div>
                   <strong id="bot-ping" class="stat-value">--ms</strong>
@@ -489,7 +519,13 @@
 
                 <article class="stat-card">
                   <div class="stat-meta">
-                    <span class="stat-icon">🌐</span>
+                    <span class="stat-icon icon-servers">
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="8" cy="8" r="6"/>
+                        <path d="M2 8h12"/>
+                        <path d="M8 2a9.5 9.5 0 0 1 0 12 9.5 9.5 0 0 1 0-12z"/>
+                      </svg>
+                    </span>
                     <span class="stat-name">SERVERS</span>
                   </div>
                   <strong id="bot-servers" class="stat-value">--</strong>
@@ -497,7 +533,13 @@
 
                 <article class="stat-card">
                   <div class="stat-meta">
-                    <span class="stat-icon">🎧</span>
+                    <span class="stat-icon icon-streaming">
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 8.5V7a5.5 5.5 0 0 1 11 0v1.5"/>
+                        <rect x="1.5" y="8.5" width="3" height="5" rx="1.5" fill="currentColor"/>
+                        <rect x="11.5" y="8.5" width="3" height="5" rx="1.5" fill="currentColor"/>
+                      </svg>
+                    </span>
                     <span class="stat-name">STREAMING</span>
                   </div>
                   <strong id="bot-playing" class="stat-value">-- phòng</strong>
@@ -505,7 +547,13 @@
 
                 <article class="stat-card">
                   <div class="stat-meta">
-                    <span class="stat-icon">🔊</span>
+                    <span class="stat-icon icon-voice">
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="2,6 5.5,6 9,2.5 9,13.5 5.5,10 2,10" fill="currentColor"/>
+                        <path d="M11.5 5a4.5 4.5 0 0 1 0 6"/>
+                        <path d="M13.5 3a7.5 7.5 0 0 1 0 10"/>
+                      </svg>
+                    </span>
                     <span class="stat-name">VOICE ROOMS</span>
                   </div>
                   <strong id="bot-connected" class="stat-value">-- phòng</strong>
@@ -513,7 +561,13 @@
 
                 <article class="stat-card wide">
                   <div class="stat-meta">
-                    <span class="stat-icon">⏱️</span>
+                    <span class="stat-icon icon-runtime">
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="8" cy="8.5" r="5.5"/>
+                        <polyline points="8 5.5 8 8.5 10 9.5"/>
+                        <path d="M6.5 1.5h3"/>
+                      </svg>
+                    </span>
                     <span class="stat-name">SYSTEM RUNTIME</span>
                   </div>
                   <strong id="bot-runtime" class="stat-value">--</strong>
@@ -521,7 +575,11 @@
 
                 <article class="stat-card wide">
                   <div class="stat-meta">
-                    <span class="stat-icon">⚡</span>
+                    <span class="stat-icon icon-lavalink">
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor" stroke="none">
+                        <path d="M8.5 1.5L2.5 9.5h4.5l-1 5 6.5-8H8l.5-5z"/>
+                      </svg>
+                    </span>
                     <span class="stat-name">LAVALINK CORE</span>
                   </div>
                   <strong id="bot-lavalink" class="stat-value">--</strong>
@@ -531,17 +589,26 @@
               <!-- Feature Highlights Grid -->
               <div class="bot-feature-grid">
                 <article class="feature-card">
-                  <span class="feature-chip">01 // MUSIC-FIRST</span>
+                  <span class="feature-chip">
+                    <svg class="feature-chip-icon" viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="5.5"/><circle cx="7" cy="7" r="2"/></svg>
+                    01 // MUSIC-FIRST
+                  </span>
                   <strong>Chất lượng âm thanh High-Fidelity</strong>
                   <p>Hỗ trợ stream nhạc chất lượng cao, độ trễ thấp và bộ đệm âm thanh tối ưu.</p>
                 </article>
                 <article class="feature-card">
-                  <span class="feature-chip">02 // REALTIME TELEMETRY</span>
+                  <span class="feature-chip">
+                    <svg class="feature-chip-icon" viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12a10.5 10.5 0 0 1 12-10"/><circle cx="2" cy="12" r="1.5" fill="currentColor"/><path d="M5 12a6.5 6.5 0 0 1 6-6"/></svg>
+                    02 // REALTIME TELEMETRY
+                  </span>
                   <strong>Đồng bộ chỉ số trực tiếp</strong>
                   <p>Trạng thái kết nối, số phòng và độ trễ được đồng bộ theo thời gian thực từ Bot Core.</p>
                 </article>
                 <article class="feature-card">
-                  <span class="feature-chip">03 // SERVER SAFEGUARD</span>
+                  <span class="feature-chip">
+                    <svg class="feature-chip-icon" viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 1.5l5 2v3.5c0 3.5-3 5.5-5 6.5-2-1-5-3-5-6.5V3.5l5-2z"/><polyline points="5 7 6.5 8.5 9 5.5"/></svg>
+                    03 // SERVER SAFEGUARD
+                  </span>
                   <strong>Uptime 24/7 & Ổn định</strong>
                   <p>Hệ thống tự động phục hồi kết nối, quản lý phân quyền an toàn cho Discord Server.</p>
                 </article>
@@ -637,7 +704,7 @@
     </section>
   </main>
 
-  <script src="script.js?v=20261123-panel-switch-v4" ></script>
+  <script src="script.js?v=20261124-source-clean-v21" ></script>
 </body>
 
 </html>

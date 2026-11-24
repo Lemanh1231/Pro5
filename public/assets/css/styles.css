@@ -1353,10 +1353,40 @@ body.color-page-active .profile-console { margin-top:0; }
 .tab-indicator {
   display: none !important;
 }
+.nav-tab-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, color 0.2s ease;
+}
+.nav-tab-icon .tab-svg-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.nav-tab-btn:hover .nav-tab-icon {
+  transform: scale(1.15);
+}
+.nav-tab-btn.active .nav-tab-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.75));
+}
+.nav-tab-btn[data-tab="bot"] .nav-tab-icon {
+  color: #8da2c0;
+}
+.nav-tab-btn[data-tab="bot"]:hover .nav-tab-icon {
+  color: #7289da;
+}
+.nav-tab-btn[data-tab="bot"].active .nav-tab-icon {
+  color: #ffffff;
+  filter: drop-shadow(0 0 8px rgba(88, 101, 242, 0.9)) drop-shadow(0 0 4px rgba(0, 229, 255, 0.6));
+}
 
 .tab-content { display: none; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding-right: 6px; }
-.tab-content.active { display: block; contain: layout paint; animation: tabFadeIn 0.16s ease-out both; }
-@keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.tab-content.active { display: block; contain: layout paint; }
 
 /* FEATURED SHOWCASE CARD (Plana Operator ID) */
 .featured-showcase-card {
@@ -1875,6 +1905,13 @@ body.color-page-active .profile-console { margin-top:0; }
   align-items: center;
   gap: 6px;
 }
+.bot-header-discord-icon {
+  width: 16px;
+  height: 16px;
+  color: #5865f2;
+  filter: drop-shadow(0 0 6px rgba(88, 101, 242, 0.7));
+  flex-shrink: 0;
+}
 .bot-header-bar-indicator {
   width: 3px;
   height: 13px;
@@ -2283,10 +2320,48 @@ body.color-page-active .profile-console { margin-top:0; }
 .stat-meta {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 .stat-icon {
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+}
+.stat-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.stat-icon.icon-ping {
+  color: #fbbf24;
+  filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));
+}
+.stat-icon.icon-servers {
+  color: #38bdf8;
+  filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5));
+}
+.stat-icon.icon-streaming {
+  color: #c084fc;
+  filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.5));
+}
+.stat-icon.icon-voice {
+  color: #34d399;
+  filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.5));
+}
+.stat-icon.icon-runtime {
+  color: #f472b6;
+  filter: drop-shadow(0 0 5px rgba(244, 114, 182, 0.5));
+}
+.stat-icon.icon-lavalink {
+  color: #00e5ff;
+  filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.6));
+}
+.bot-live-grid .stat-card:hover .stat-icon {
+  transform: scale(1.18);
 }
 .stat-name {
   color: #7ee0ff;
@@ -2330,7 +2405,9 @@ body.color-page-active .profile-console { margin-top:0; }
   transform: translateY(-1px);
 }
 .feature-chip {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 2px 7px;
   border-radius: 4px;
   background: rgba(0, 229, 255, 0.12);
@@ -2339,6 +2416,11 @@ body.color-page-active .profile-console { margin-top:0; }
   font: 800 9.5px "JetBrains Mono", monospace;
   letter-spacing: 0.06em;
   margin-bottom: 6px;
+}
+.feature-chip-icon {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
 }
 .feature-card strong {
   display: block;
@@ -2528,8 +2610,8 @@ body.mobile-panel-open {
     position: fixed !important;
     inset: 0 !important;
     background: rgba(3, 6, 14, 0.75) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     z-index: 900 !important;
     opacity: 0 !important;
     pointer-events: none !important;
@@ -2555,7 +2637,7 @@ body.mobile-panel-open {
     top: auto !important;
     width: 100% !important;
     max-width: 100% !important;
-    height: auto !important;
+    height: auto;
     max-height: min(720px, 86dvh) !important;
     border-radius: 20px 20px 0 0 !important;
     background: rgba(8, 12, 26, 0.96) !important;
@@ -2949,6 +3031,10 @@ body.mobile-panel-open {
 
 .music-dock {
   position: relative;
+  z-index: 5;
+  isolation: isolate;
+  transform-style: flat;
+  pointer-events: auto;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -3243,6 +3329,8 @@ body.mobile-panel-open {
 
 /* Controls & Buttons */
 .music-controls {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -3250,6 +3338,7 @@ body.mobile-panel-open {
 }
 
 .music-btn {
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3314,6 +3403,8 @@ body.mobile-panel-open {
 }
 
 .music-vol-slider-wrap input[type="range"] {
+  min-width: 0;
+  margin: 0;
   width: 100%;
   height: 4px;
   accent-color: #00e5ff;
@@ -3322,7 +3413,33 @@ body.mobile-panel-open {
   border-radius: 2px;
 }
 
+/* Firefox hit testing must target the button, not decorative SVG children. */
+.music-btn svg, .music-btn svg * { pointer-events: none; }
+
 @media (min-width: 881px) {
+  /* Let desktop detail panels grow with content; scroll the page, not tabs. */
+  #profile-screen .profile-left-col {
+    height: auto;
+    align-self: stretch;
+  }
+  #profile-screen > .profile-console {
+    height: auto;
+    min-height: 720px;
+  }
+  #profile-screen .right-panel-container {
+    height: auto;
+    align-self: stretch;
+  }
+  #profile-screen .right-widgets-inner {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  #profile-screen .tab-content {
+    flex: 0 0 auto;
+    overflow: visible;
+    contain: none;
+  }
   /* Keep the desktop card readable; let short viewports scroll the page. */
   html:has(#profile-screen.active) {
     overflow-y: auto;
@@ -3341,7 +3458,7 @@ body.mobile-panel-open {
     touch-action: pan-y pinch-zoom;
   }
   #profile-screen > .profile-console {
-    height: 720px;
+    height: auto;
     max-height: none;
   }
   #profile-screen:has(.profile-console.collapsed, #rightPanelContainer.collapsed) .music-dock {
@@ -3358,6 +3475,15 @@ body.mobile-panel-open {
   #profile-screen:has(.profile-console.collapsed, #rightPanelContainer.collapsed) .music-disc { width: 42px; height: 42px; }
   #profile-screen:has(.profile-console.collapsed, #rightPanelContainer.collapsed) .music-btn { width: 32px; height: 32px; }
   #profile-screen:has(.profile-console.collapsed, #rightPanelContainer.collapsed) .music-btn-play { width: 36px; height: 36px; }
+}
+
+/* Real FFT data drives these transforms, never a synthetic bounce. */
+.music-dock.playing .music-equalizer .eq-bar,
+.music-equalizer .eq-bar {
+  animation: none !important;
+  height: 18px;
+  transform: scaleY(0.08);
+  transform-origin: bottom;
 }
 
 @media (max-width: 880px) {

@@ -2478,6 +2478,15 @@ function syncPageAnimationVisibility() {
   document.documentElement.classList.toggle('page-backgrounded', document.hidden);
 }
 document.addEventListener('visibilitychange', syncPageAnimationVisibility);
+// Chrome can restore a frozen/BFCache page without the visibility sequence
+// expected by the old handler. Reconcile on restoration and window focus too.
+function restorePageAnimations() {
+  syncPageAnimationVisibility();
+  requestAnimationFrame(syncPageAnimationVisibility);
+}
+window.addEventListener('pageshow', restorePageAnimations);
+window.addEventListener('focus', restorePageAnimations);
+document.addEventListener('resume', restorePageAnimations);
 syncPageAnimationVisibility();
 
 // Recreate both streams on resume instead of trusting their old ready state.
@@ -2748,7 +2757,10 @@ function hideColorPage() {
 }
 
 function setText(element, value) {
-  if (element) element.textContent = value;
+  if (element) {
+    const text = String(value ?? '');
+    if (element.textContent !== text) element.textContent = text;
+  }
 }
 
 function setBotStatusDot(status = 'offline') {
@@ -3175,13 +3187,23 @@ window.addEventListener('resize', () => {
 });
 syncPanelPlacement();
 
+let widgetRevealAnimation = null;
 function setPanelState(collapsed) {
   if (!rightPanelContainer) return;
+  const wasCollapsed = rightPanelContainer.classList.contains('collapsed');
+  widgetRevealAnimation?.cancel();
   syncPanelPlacement();
   rightPanelContainer.classList.toggle('collapsed', collapsed);
   interactiveCard?.classList.toggle('collapsed', collapsed);
   panelToggleBtn?.classList.toggle('is-collapsed', collapsed);
   mobilePanelBackdrop?.classList.toggle('active', !collapsed);
+  if (wasCollapsed && !collapsed && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const content = rightPanelContainer.querySelector('.right-widgets-inner');
+    if (content) widgetRevealAnimation = content.animate(
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 280, easing: 'ease-out' }
+    );
+  }
 
   if (collapsed) {
     panelToggleBtn?.setAttribute('title', 'Mở rộng bảng');
@@ -3273,33 +3295,73 @@ let dragTicking = false;
 const navTabBtns = document.querySelectorAll('.nav-tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 let tabRefreshTimer = null;
+let tabSwitchAnimation = null;
+let tabSwitchVersion = 0;
+let tabSizeAnimation = null;
+let tabCompositingTarget = null;
 
 navTabBtns.forEach((btn) => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', async () => {
     const targetTab = btn.getAttribute('data-tab');
     if (!targetTab) return;
     if (btn.classList.contains('active')) return;
+    const targetContent = document.getElementById(`tab-${targetTab}`);
+    if (!targetContent) return;
+    const sizeHost = window.innerWidth > 880 ? interactiveCard : rightPanelContainer;
+    // Capture the currently drawn height before cancelling a rapid switch.
+    const previousHeight = sizeHost?.getBoundingClientRect().height;
+    const version = ++tabSwitchVersion;
+    widgetRevealAnimation?.cancel();
+    tabSwitchAnimation?.cancel();
+    if (tabCompositingTarget) tabCompositingTarget.style.willChange = '';
+    tabCompositingTarget = null;
+    tabSwitchAnimation = null;
+    tabSizeAnimation?.cancel();
+    tabSizeAnimation = null;
     clearTimeout(tabRefreshTimer);
     stopBotStatusPolling();
 
     navTabBtns.forEach((b) => {
-      b.classList.remove('active');
-      b.setAttribute('aria-selected', 'false');
+      const selected = b === btn;
+      b.classList.toggle('active', selected);
+      b.setAttribute('aria-selected', String(selected));
     });
-    tabContents.forEach((c) => c.classList.remove('active'));
-
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected', 'true');
-    const targetContent = document.getElementById(`tab-${targetTab}`);
-    if (targetContent) {
-      targetContent.classList.add('active');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      if (version !== tabSwitchVersion) return;
+      // Swap immediately: never wait for a fade-out or leave a blank frame.
+      tabContents.forEach(c => c.classList.toggle('active', c === targetContent));
+      const nextHeight = sizeHost?.getBoundingClientRect().height;
+      if (!reducedMotion && sizeHost && Math.abs(nextHeight - previousHeight) > 1) {
+        tabSizeAnimation = sizeHost.animate(
+          [{ height: `${previousHeight}px` }, { height: `${nextHeight}px` }],
+          { duration: 220, easing: 'cubic-bezier(.2,0,0,1)' }
+        );
+      }
+      if (!reducedMotion) {
+        // Promote only the incoming content, only for this transition. Do not
+        // animate blur/shadows or keep every inactive panel in GPU memory.
+        tabCompositingTarget = targetContent;
+        targetContent.style.willChange = 'opacity';
+        tabSwitchAnimation = targetContent.animate(
+          [{ opacity: 0.65 }, { opacity: 1 }],
+          { duration: 500, easing: 'cubic-bezier(.2,0,.2,1)' }
+        );
+        await Promise.all([tabSwitchAnimation.finished, tabSizeAnimation?.finished]);
+      }
+      if (version !== tabSwitchVersion) return;
+      tabSwitchAnimation = null;
+      tabSizeAnimation = null;
+      targetContent.style.willChange = '';
+      tabCompositingTarget = null;
+      tabRefreshTimer = setTimeout(() => {
+        if (version !== tabSwitchVersion || !btn.classList.contains('active')) return;
+        if (targetTab === 'colorizer') buildUnityRichText();
+        else if (targetTab === 'bot') startBotStatusPolling();
+      }, 0);
+    } catch (_) {
+      // Cancellation is expected when another navigation button is pressed.
     }
-    // Let the incoming panel paint before rebuilding content or polling APIs.
-    tabRefreshTimer = setTimeout(() => {
-      if (!btn.classList.contains('active')) return;
-      if (targetTab === 'colorizer') buildUnityRichText();
-      else if (targetTab === 'bot') startBotStatusPolling();
-    }, 180);
   });
 });
 
@@ -3468,10 +3530,8 @@ if (document.readyState === 'loading') {
   let fadeFrame = null;
   let finishFade = null;
   const FADE_MS = 1500;
-  const GAP_MS = 300;
   let isFadingOutToPause = false;
   let isChangingTrack = false;
-  let naturalFadeStarted = false;
 
   function cancelMusicFade() {
     cancelAnimationFrame(fadeFrame);
@@ -3499,8 +3559,7 @@ if (document.readyState === 'loading') {
         if (isFadeOut) {
           // Smooth logarithmic/power decay for fade out so volume drops to true silence
           const factor = Math.pow(1 - progress, 1.8);
-          currentVol = Math.max(0, start * factor);
-          if (progress >= 0.95 || currentVol < 0.003) currentVol = 0;
+          currentVol = target + (start - target) * factor;
         } else {
           // Smooth fade in
           const factor = 1 - Math.pow(1 - progress, 1.8);
@@ -3530,6 +3589,7 @@ if (document.readyState === 'loading') {
     if (completed && operation === musicOperation && userPaused) {
       await new Promise(r => setTimeout(r, 80));
       if (operation === musicOperation && userPaused) {
+        audio.volume = 0;
         audio.pause();
       }
     }
@@ -3571,7 +3631,8 @@ if (document.readyState === 'loading') {
         return;
       }
     }
-    await refreshPlaylist();
+    // Do not leave the player silent while a playlist request waits on network.
+    void refreshPlaylist();
     if (operation !== musicOperation) {
       isChangingTrack = false;
       return;
@@ -3580,17 +3641,20 @@ if (document.readyState === 'loading') {
     audio.volume = 0;
     trackIndex = (trackIndex + offset + tracks.length) % tracks.length;
     selectTrack();
-    naturalFadeStarted = false;
 
-    // Nghỉ khi chuyển bài là 0.3s (300ms)
-    await new Promise(resolve => setTimeout(resolve, GAP_MS));
+    // Start the next source without an extra silent gap after fading out.
+    await Promise.resolve();
     if (operation !== musicOperation) {
       isChangingTrack = false;
       return;
     }
 
-    isChangingTrack = false;
-    if (authenticated && !userPaused) void play();
+    // Keep old-source time events isolated until the new playback has started.
+    try {
+      if (authenticated && !userPaused) await play();
+    } finally {
+      isChangingTrack = false;
+    }
   }
 
   function selectTrack() {
@@ -3611,7 +3675,8 @@ if (document.readyState === 'loading') {
   audio.volume = 0;
 
   function syncPlayback() {
-    const isPlaying = !audio.paused && !isFadingOutToPause && !userPaused;
+    // A pause request is not an actual pause until fade-out has reached zero.
+    const isPlaying = !audio.paused;
     if (dock) dock.classList.toggle('playing', isPlaying);
     if (playIcon) playIcon.style.display = isPlaying ? 'none' : 'block';
     if (pauseIcon) pauseIcon.style.display = isPlaying ? 'block' : 'none';
@@ -3620,18 +3685,95 @@ if (document.readyState === 'loading') {
     toggle.setAttribute('aria-pressed', String(isPlaying));
   }
 
+  let musicContext = null;
+  let musicAnalyser = null;
+  let spectrumFrame = null;
+  const spectrumBars = [...document.querySelectorAll('#music-equalizer .eq-bar')];
+  const spectrumData = new Uint8Array(128);
+  function prepareMusicSpectrum() {
+    try {
+      if (!musicContext) {
+        const Context = window.AudioContext || window.webkitAudioContext;
+        if (!Context) return;
+        musicContext = new Context();
+        const source = musicContext.createMediaElementSource(audio);
+        musicAnalyser = musicContext.createAnalyser();
+        musicAnalyser.fftSize = 256;
+        musicAnalyser.smoothingTimeConstant = 0.75;
+        source.connect(musicAnalyser);
+        musicAnalyser.connect(musicContext.destination);
+      }
+      if (musicContext.state === 'suspended' || musicContext.state === 'interrupted') {
+        void musicContext.resume().then(startMusicSpectrum).catch(() => {});
+      }
+      startMusicSpectrum();
+    } catch (_) { /* Keep native playback if Web Audio is unavailable. */ }
+  }
+  function drawMusicSpectrum(now = 0) {
+    spectrumFrame = null;
+    if (audio.paused || document.hidden || !musicAnalyser) {
+      spectrumBars.forEach(bar => { bar.style.transform = 'scaleY(0.08)'; });
+      return;
+    }
+    // At most 30 updates/sec, and no work when the equalizer is CSS-hidden.
+    if (now - drawMusicSpectrum.lastTime >= 33 && spectrumBars[0]?.getClientRects().length) {
+      drawMusicSpectrum.lastTime = now;
+      musicAnalyser.getByteFrequencyData(spectrumData);
+      spectrumBars.forEach((bar, index) => {
+        const start = [1, 4, 10, 24, 52][index] || 1;
+        const end = [4, 10, 24, 52, 100][index] || 128;
+        let energy = 0;
+        for (let bin = start; bin < end; bin++) energy += spectrumData[bin];
+        bar.style.transform = `scaleY(${Math.max(0.08, energy / ((end - start) * 255))})`;
+      });
+    }
+    spectrumFrame = requestAnimationFrame(drawMusicSpectrum);
+  }
+  drawMusicSpectrum.lastTime = -Infinity;
+  function startMusicSpectrum() {
+    if (spectrumFrame === null) spectrumFrame = requestAnimationFrame(drawMusicSpectrum);
+  }
+  audio.addEventListener('playing', startMusicSpectrum);
+  audio.addEventListener('pause', () => {
+    cancelAnimationFrame(spectrumFrame);
+    spectrumFrame = null;
+    spectrumBars.forEach(bar => { bar.style.transform = 'scaleY(0.08)'; });
+  });
+
   async function play() {
     if (!authenticated) return;
     if (document.hidden) {
       resumeMusicOnVisible = !userPaused;
       return;
     }
+    // Resume Web Audio during the click's activation, before awaiting network.
+    prepareMusicSpectrum();
+    const contextReady = musicContext && musicContext.state !== 'running'
+      ? musicContext.resume()
+      : Promise.resolve();
+    // Handle rejection immediately, even while the initial playlist is loading.
+    contextReady.catch(() => {});
     userPaused = false;
     isFadingOutToPause = false;
     const operation = ++musicOperation;
     cancelMusicFade();
     try {
       await initialMusicPlaylist;
+      if (document.hidden || userPaused || operation !== musicOperation) return;
+      if (musicContext) {
+        let resumeTimeout;
+        try {
+          await Promise.race([
+            contextReady,
+            new Promise((_, reject) => {
+              resumeTimeout = setTimeout(() => reject(new Error('AudioContext resume timeout')), 3000);
+            })
+          ]);
+          if (musicContext.state !== 'running') throw new Error('Audio output unavailable');
+        } finally {
+          clearTimeout(resumeTimeout);
+        }
+      }
       if (document.hidden || userPaused || operation !== musicOperation) return;
       if (audio.paused) {
         audio.volume = 0;
@@ -3640,13 +3782,18 @@ if (document.readyState === 'loading') {
       if (operation !== musicOperation) return;
       notice.hidden = true;
       syncPlayback();
-      const goalVol = targetMusicVolume > 0 ? targetMusicVolume : 0.5;
+      const goalVol = targetMusicVolume;
       void fadeMusicTo(goalVol, FADE_MS);
     } catch (error) {
+      if (operation !== musicOperation) return;
+      cancelMusicFade();
+      audio.pause();
+      audio.volume = 0;
+      resumeMusicOnVisible = true;
       notice.hidden = false;
       notice.textContent = error.name === 'NotAllowedError'
         ? 'Bấm Play để bật nhạc'
-        : 'Chưa phát được nhạc. Bấm Play để thử lại.';
+        : 'Đầu ra âm thanh chưa khôi phục. Bấm Play để tiếp tục.';
       syncPlayback();
     }
   }
@@ -3703,6 +3850,17 @@ if (document.readyState === 'loading') {
   audio.addEventListener('pause', clearSystemMedia);
 
   function resumeMusic() {
+    if (!document.hidden && authenticated && !userPaused && !audio.paused) {
+      // The element may keep advancing while its Web Audio output is suspended.
+      if (musicContext && musicContext.state !== 'running') {
+        resumeMusicOnVisible = false;
+        audio.pause();
+        audio.volume = 0;
+        void play();
+        return;
+      }
+      prepareMusicSpectrum();
+    }
     if (!document.hidden && resumeMusicOnVisible && authenticated && !userPaused) {
       resumeMusicOnVisible = false;
       void play();
@@ -3715,6 +3873,7 @@ if (document.readyState === 'loading') {
   });
   window.addEventListener('pagehide', suspendMusic);
   window.addEventListener('pageshow', resumeMusic);
+  window.addEventListener('focus', resumeMusic);
   audio.addEventListener('pause', syncPlayback);
 
   // Volume & Mute handling
@@ -3729,7 +3888,10 @@ if (document.readyState === 'loading') {
     volInput.addEventListener('input', () => {
       targetMusicVolume = Number(volInput.value);
       if (targetMusicVolume > 0) lastVolume = targetMusicVolume;
-      if (!audio.paused && !userPaused) void fadeMusicTo(targetMusicVolume);
+      if (!audio.paused && !userPaused && !isChangingTrack) {
+        cancelMusicFade();
+        audio.volume = targetMusicVolume;
+      }
       syncVolumeUI();
     });
   }
@@ -3747,32 +3909,40 @@ if (document.readyState === 'loading') {
     });
   }
 
-  audio.addEventListener('volumechange', syncVolumeUI);
+  // Fade frames change actual volume, not the user's slider value. Updating
+  // the range on every frame can interrupt native dragging in Firefox.
+  syncVolumeUI();
 
   const time = value => Number.isFinite(value) ? `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, '0')}` : '--:--';
 
+  let seekingMusic = false;
+  seek.addEventListener('pointerdown', () => { seekingMusic = true; });
+  const finishMusicSeek = () => { seekingMusic = false; };
+  window.addEventListener('pointerup', finishMusicSeek);
+  window.addEventListener('pointercancel', finishMusicSeek);
+  window.addEventListener('blur', finishMusicSeek);
+
   function syncTime() {
-    if (audio.duration && !audio.paused && !userPaused && !isChangingTrack && !isFadingOutToPause) {
-      const remaining = audio.duration - audio.currentTime;
-      if (remaining <= 1.5 && remaining > 0 && !naturalFadeStarted) {
-        naturalFadeStarted = true;
-        void fadeMusicTo(0, Math.max(200, remaining * 1000));
-      } else if (remaining > 1.6) {
-        naturalFadeStarted = false;
-      }
-    }
+    // Rendering progress must never start/cancel a playback fade. Old-source
+    // timeupdate events can arrive while a new source is being loaded.
     if (document.hidden) return;
     const profScreen = document.getElementById('profile-screen');
     if (profScreen && !profScreen.classList.contains('active')) return;
     elapsed.textContent = time(audio.currentTime);
     length.textContent = time(audio.duration);
     const pct = Number.isFinite(audio.duration) && audio.duration > 0 ? (audio.currentTime / audio.duration * 100) : 0;
-    seek.value = String(pct);
-    if (seekFill) seekFill.style.width = `${pct}%`;
+    if (!seekingMusic) {
+      seek.value = String(pct);
+      if (seekFill) seekFill.style.width = `${pct}%`;
+    }
   }
 
   seek.addEventListener('input', () => {
     if (Number.isFinite(audio.duration)) {
+      if (!isChangingTrack && !isFadingOutToPause) {
+        cancelMusicFade();
+        if (!audio.paused && !userPaused) audio.volume = targetMusicVolume;
+      }
       const pct = Number(seek.value);
       audio.currentTime = pct / 100 * audio.duration;
       if (seekFill) seekFill.style.width = `${pct}%`;
