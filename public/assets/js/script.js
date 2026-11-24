@@ -3553,7 +3553,8 @@ if (document.readyState === 'loading') {
       finishFade = resolve;
       const tick = now => {
         const elapsed = now - started;
-        const progress = Math.min(1, elapsed / duration);
+        // A queued RAF timestamp can precede performance.now() at creation.
+        const progress = Math.max(0, Math.min(1, elapsed / duration));
 
         let currentVol;
         if (isFadeOut) {
@@ -3566,7 +3567,7 @@ if (document.readyState === 'loading') {
           currentVol = Math.min(target, start + (target - start) * factor);
         }
 
-        audio.volume = Number(currentVol.toFixed(4));
+        audio.volume = Math.max(0, Math.min(1, Number(currentVol.toFixed(4))));
 
         if (progress < 1) {
           fadeFrame = requestAnimationFrame(tick);
@@ -3897,15 +3898,32 @@ if (document.readyState === 'loading') {
   }
 
   if (volBtn) {
-    volBtn.addEventListener('click', () => {
+    volBtn.addEventListener('click', async () => {
       if (targetMusicVolume > 0) {
         lastVolume = targetMusicVolume;
         targetMusicVolume = 0;
       } else {
         targetMusicVolume = lastVolume > 0 ? lastVolume : 0.5;
       }
-      if (!audio.paused && !userPaused) void fadeMusicTo(targetMusicVolume);
       syncVolumeUI();
+      // Unmuting is a user gesture: resume the output as well as restoring the
+      // selected volume. Some browsers suspend a silent Web Audio graph.
+      const selectedVolume = targetMusicVolume;
+      const operation = musicOperation;
+      if (selectedVolume > 0) {
+        prepareMusicSpectrum();
+        if (musicContext && musicContext.state !== 'running') {
+          try { await musicContext.resume(); } catch (_) { return; }
+        }
+      }
+      if (operation !== musicOperation || targetMusicVolume !== selectedVolume) return;
+      // Do not cancel the fade that finishes a track change or manual pause.
+      // play() reads the latest selected volume when the new source is ready.
+      if (!audio.paused && !userPaused && !isChangingTrack && !isFadingOutToPause) {
+        audio.muted = false;
+        void fadeMusicTo(selectedVolume);
+        startMusicSpectrum();
+      }
     });
   }
 
