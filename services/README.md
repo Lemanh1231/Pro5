@@ -1,47 +1,110 @@
-# Optional realtime services for Pro5
+# Dựng realtime cho Pro5
 
-Branch `lanyard` contains the profile frontend plus the supporting Lanyard and
-Spotify status code. The `main` branch remains frontend-only. These are sanitized
-source copies; creating this branch does not reconfigure production services.
+![Pro5 desktop](../docs/images/pro5-desktop.png)
 
-## Lanyard / Discord
+## Cấu trúc
 
-```sh
-cd services/lanyard
-cp .env.example .env
-# Fill BOT_TOKEN and MONITORED_USER_ID locally; never commit .env.
-docker compose -f compose.yaml up -d --build
+```text
+services/
+├── lanyard/
+│   ├── lib/
+│   ├── config/
+│   ├── Dockerfile
+│   ├── compose.yaml
+│   ├── .env.example
+│   ├── mix.exs
+│   ├── mix.lock
+│   ├── LICENSE
+│   └── UPSTREAM-README.md
+├── spotify/
+│   ├── server.js
+│   ├── package.json
+│   ├── package-lock.json
+│   └── .env.example
+└── README.md
 ```
 
-Requires Docker Compose. Preserve the upstream LICENSE and attribution; see
-UPSTREAM-README.md for Discord bot setup and API protocol. Set EXTERNAL_URL to
-your own HTTPS origin. Do not publish Redis ports or expose bot tokens.
+## Chuẩn bị
 
-## Spotify realtime
+Cài Git, Docker Compose, Node.js 20+ và Nginx:
 
-Requires Node.js 20+ (native fetch, AbortSignal.timeout).
+```bash
+git clone --branch lanyard https://github.com/Lemanh1231/Pro5.git
+cd Pro5
+```
 
-```sh
+## Lanyard
+
+```bash
+cd services/lanyard
+cp .env.example .env
+chmod 600 .env
+```
+
+Tạo bot tại Discord Developer Portal. Thiết lập bot và quyền cần thiết theo
+`UPSTREAM-README.md`, cho tài khoản cần theo dõi vào server của bot.
+Điền các giá trị của bạn trong `.env`:
+
+```dotenv
+BOT_TOKEN=
+MONITORED_USER_ID=
+EXTERNAL_URL=https://profile.example.com
+PORT=4001
+REDIS_DSN=redis://redis:6379
+```
+
+```bash
+docker compose -f compose.yaml up -d --build
+docker compose -f compose.yaml ps
+curl http://127.0.0.1:4001/v1/users/YOUR_DISCORD_USER_ID
+```
+
+Đặt `DISCORD_USER_ID` trong `public/assets/js/script.js` thành tài khoản cần hiển thị.
+Không mở cổng Redis ra Internet. Giữ LICENSE khi phân phối lại source Lanyard.
+
+## Spotify
+
+Từ thư mục gốc repo:
+
+```bash
 cd services/spotify
 cp .env.example .env
-# Fill your own Spotify credentials locally.
+chmod 600 .env
 npm ci
+```
+
+Tạo ứng dụng Spotify Developer, lấy refresh token bằng OAuth chính thức với scope
+`user-read-currently-playing`. Điền thông tin của bạn vào `.env`:
+
+```dotenv
+PORT=3001
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+SPOTIFY_REFRESH_TOKEN=
+```
+
+```bash
 node --env-file=.env server.js
 ```
 
-Supply a Spotify refresh token with permission to read currently playing state
-(`user-read-currently-playing`). Obtain it using Spotify's official OAuth flow;
-no live token or token-generation helper is included. The server binds to
-127.0.0.1:3001 and provides `/api/spotify` and `/ws/spotify` for the frontend.
+Mở terminal khác để kiểm tra:
 
-## Reverse proxy example
+```bash
+curl http://127.0.0.1:3001/api/spotify
+```
 
-Add to your existing HTTPS virtual host, not as a replacement for its config:
+Dùng trình quản lý tiến trình như systemd để giữ dịch vụ chạy sau khi đóng terminal.
+Không đưa `.env`, access token hoặc refresh token vào Git hay JavaScript frontend.
+
+## Nginx
+
+Thêm vào server block HTTPS đang phục vụ Pro5:
 
 ```nginx
 location = /api/spotify {
     proxy_pass http://127.0.0.1:3001;
 }
+
 location = /ws/spotify {
     proxy_pass http://127.0.0.1:3001;
     proxy_http_version 1.1;
@@ -49,9 +112,11 @@ location = /ws/spotify {
     proxy_set_header Connection "upgrade";
     proxy_read_timeout 75s;
 }
+
 location /v1/ {
     proxy_pass http://127.0.0.1:4001;
 }
+
 location = /socket {
     proxy_pass http://127.0.0.1:4001;
     proxy_http_version 1.1;
@@ -61,6 +126,32 @@ location = /socket {
 }
 ```
 
-The bot/public-status backend and Lavalink web are NOT included. Add suitable
-rate limits, TLS and access controls for your environment. These sample files
-contain no host-specific credentials, database dumps, logs or production env.
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Bổ sung rate limit theo nhu cầu. Mẫu trên không thay thế cấu hình TLS hoặc cấu hình
+các dịch vụ khác. Backend trạng thái bot và giao diện Lavalink không được cung cấp.
+
+## Kiểm tra
+
+Mở Pro5, Authenticate và vào Hoạt động. Phát Spotify trên tài khoản đã cấu hình;
+kiểm tra bài hát, tiến độ và trạng thái Discord. Thử chuyển tab trình duyệt rồi
+quay lại để kiểm tra kết nối realtime.
+
+## Cập nhật
+
+Từ thư mục gốc repo:
+
+```bash
+git pull --ff-only origin lanyard
+node --check services/spotify/server.js
+cd services/spotify
+npm ci
+cd ../lanyard
+docker compose -f compose.yaml up -d --build
+```
+
+Khởi động lại tiến trình Spotify bằng trình quản lý dịch vụ của bạn và deploy
+frontend theo README tại thư mục gốc. Giữ nguyên file `.env` riêng của máy chủ.
