@@ -1,110 +1,145 @@
-# Pro5 — Shittim Chest Profile
+# Pro5
 
-Website profile tĩnh với terminal Plana, hoạt động Discord/Spotify và nhạc nền.
-
-![Giao diện Pro5 desktop](docs/images/pro5-desktop.png)
-
-Ảnh chụp thực tế; trạng thái online thay đổi theo thời gian.
+![Pro5 desktop](docs/images/pro5-desktop.png)
 
 ## Cấu trúc
 
 ```text
-public/
-├── index.html
-├── assets/
-│   ├── css/styles.css
-│   └── js/script.js
-├── data/
-│   ├── images/          # Banner, showcase, preview
-│   ├── background/     # landscape/ và mobile/
-│   ├── badges/         # Badge đang sử dụng
-│   ├── decoration/     # Trang trí avatar
-│   ├── games/
-│   ├── favicon/
-│   └── music/          # Audio sinh tại máy triển khai, không commit
-├── styles.css -> assets/css/styles.css
-└── script.js -> assets/js/script.js
-tools/                  # serve.sh, deploy.sh, music-sync.py
-docs/images/            # Ảnh mẫu README
+Pro5/
+├── public/
+│   ├── index.html
+│   ├── assets/
+│   │   ├── css/styles.css
+│   │   └── js/script.js
+│   ├── data/
+│   │   ├── images/
+│   │   ├── background/
+│   │   │   ├── landscape/
+│   │   │   └── mobile/
+│   │   ├── badges/
+│   │   ├── decoration/
+│   │   ├── games/
+│   │   ├── favicon/
+│   │   └── music/
+│   ├── styles.css
+│   ├── script.js
+│   ├── robots.txt
+│   └── sitemap.xml
+├── tools/
+│   ├── serve.sh
+│   ├── deploy.sh
+│   └── music-sync.py
+├── docs/images/pro5-desktop.png
+└── README.md
 ```
 
-Các symlink trong data giữ URL tương thích mà không lưu ảnh trùng.
-Lavalink web, preview/test, cấu hình máy chủ và backup không thuộc repo này.
+## Chạy local
 
-## Quick start
+Cài Python 3 và Git:
 
-Requires Python 3. From a clone:
-
-```sh
-git clone https://github.com/Lemanh1231/Pro5.git
+```bash
+git clone --branch main https://github.com/Lemanh1231/Pro5.git
 cd Pro5
 bash tools/serve.sh
 ```
 
-Open http://127.0.0.1:8080. No npm installation is required.
+Mở `http://127.0.0.1:8080`.
 
-### Mẫu dựng Nginx
+```bash
+HOST=0.0.0.0 PORT=8080 bash tools/serve.sh
+```
 
-Sau khi deploy với `WEB_ROOT=/var/www/example`, có thể dùng server block static:
+Chỉ dùng `HOST=0.0.0.0` khi cần truy cập từ mạng nội bộ tin cậy.
+
+## Chỉnh sửa
+
+Sửa giao diện tại `public/index.html`, `public/assets/css/styles.css` và
+`public/assets/js/script.js`. Giữ các symlink để URL tài nguyên cũ vẫn hoạt động.
+
+## Deploy
+
+Cài Node.js và rsync. Sao lưu document root trước khi cập nhật:
+
+```bash
+sudo tar -czf /path/to/pro5-backup.tar.gz -C /var/www kotori.click
+sudo bash tools/deploy.sh
+```
+
+Hoặc chọn thư mục khác:
+
+```bash
+sudo WEB_ROOT=/var/www/profile bash tools/deploy.sh
+```
+
+Deploy mặc định tới `/var/www/kotori.click`, không xóa file cũ và không restart dịch vụ.
+
+## Nginx
+
+Thêm server block cho domain của bạn:
 
 ```nginx
 server {
     listen 80;
     server_name profile.example.com;
-    root /var/www/example;
+    root /var/www/profile;
     index index.html;
+
     location / {
         try_files $uri $uri/ =404;
     }
 }
 ```
 
-Mẫu này chưa có TLS hoặc proxy realtime. Chạy `sudo nginx -t` trước khi reload;
-không ghi đè cấu hình production đang phục vụ các dịch vụ khác.
-
-## Deployment
-
-Requires Node.js (syntax validation), rsync and permission to write the destination.
-
-```sh
-sudo bash tools/deploy.sh
-# Or choose another document root:
-sudo WEB_ROOT=/var/www/example bash tools/deploy.sh
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
-Default production directory: `/var/www/kotori.click`. The source workspace
-does not need to be there or under `/root`. Deployment does not delete existing
-files and does not deploy Lavalink or preview applications. Keep relative
-compatibility symlinks: they preserve existing asset URLs.
+Cấu hình HTTPS trước khi dùng các tích hợp realtime. Không ghi đè server block
+đang phục vụ dịch vụ khác bằng mẫu trên.
 
-## Optional integrations
+## Nhạc
 
-Live Discord/Spotify/bot status requires same-origin backend proxies. This repo
-contains only browser-side clients, no API servers, credentials or server config.
-Frontend route names are public by design, not API keys. Static preview does not
-provide those endpoints. The Lavalink dashboard is not included.
+Cài FFmpeg/ffprobe, thêm audio vào `media/music-source/songs/` và ảnh bìa WebP
+cùng tên file vào `media/music-source/images/`:
 
-## Music and assets
+```text
+media/music-source/
+├── songs/
+│   └── Track.m4a
+└── images/
+    └── Track.webp
+```
 
-Site artwork is included. Audio/originals and generated playlists are excluded
-by default. Provide audio in `media/music-source/songs/` and covers in `images/`,
-then run `python3 tools/music-sync.py` (requires FFmpeg/ffprobe). To publish to
-production, set `MUSIC_PUBLIC=/var/www/kotori.click/data/music`.
-MUSIC_SOURCE can override the originals directory. Only publish artwork/audio
-you have permission to redistribute.
+```bash
+python3 tools/music-sync.py
+```
 
-Ảnh trùng byte dùng chung qua symlink. Tài nguyên chắc chắn không được tham chiếu
-đã loại khỏi bản mới; không xóa tùy tiện ảnh được JavaScript chọn động.
+Xuất trực tiếp vào web đang chạy:
 
-## Backup
+```bash
+MUSIC_PUBLIC=/var/www/kotori.click/data/music python3 tools/music-sync.py
+```
 
-Backup/restore production nằm ngoài Git. Sao lưu workspace và document root
-trước thay đổi lớn. Deploy không tự xóa file cũ. Ảnh xóa khỏi bản mới vẫn có thể
-tồn tại trong lịch sử Git; không rewrite lịch sử trong đợt dọn này.
+Audio và playlist không được cung cấp sẵn trong Git. Chỉ xuất bản nội dung bạn
+có quyền sử dụng; không commit nhạc riêng tư.
 
-## Security scope
+## Discord và Spotify realtime
 
-No backend source, host configuration, secrets, private originals, backups or
-test/preview applications are intended to be tracked. Keep credentials on the
-server; never embed them in browser JavaScript. Personal profile links and public
-Discord IDs are part of the displayed profile.
+Dùng branch `lanyard` để dựng dịch vụ hỗ trợ:
+
+```bash
+git clone --branch lanyard https://github.com/Lemanh1231/Pro5.git Pro5-realtime
+cd Pro5-realtime
+```
+
+Làm theo `services/README.md`. Preview tĩnh không tự cung cấp API/WebSocket.
+Giữ token, client secret và refresh token trên máy chủ, không đưa vào frontend.
+
+## Cập nhật
+
+```bash
+git pull --ff-only origin main
+node --check public/assets/js/script.js
+sudo bash tools/deploy.sh
+```
