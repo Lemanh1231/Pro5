@@ -1,0 +1,21 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 48mb --maxmemory-policy noeviction
+    volumes:
+      - lanyard-redis:/data
+  lanyard:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      REDIS_DSN: redis://redis:6379
+      PORT: "4001"
+      ERL_FLAGS: "+S 2:2 +SDcpu 1 +SDio 1 +A 2"
+    ports:
+      - "127.0.0.1:4001:4001"
+    depends_on:
+      - redis
+volumes:
+  lanyard-redis:

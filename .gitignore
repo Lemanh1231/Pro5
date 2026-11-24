@@ -30,6 +30,13 @@ __pycache__/
 *.log
 *.bak*
 node_modules/
+**/.env
+**/.env.*
+!**/.env.example
+**/_build/
+**/deps/
+**/erl_crash.dump*
+**/dump.rdb
 
 # Published music is optional, generated locally; do not upload it by default.
 /public/data/music/*

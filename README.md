@@ -1,5 +1,9 @@
 # Pro5 — Shittim Chest Profile
 
+> Branch **lanyard**: kèm source hỗ trợ Discord/Lanyard và Spotify realtime.
+> Xem [hướng dẫn services](services/README.md). Branch `main` chỉ chứa frontend.
+> Các dịch vụ cần token riêng trong `.env` tại máy triển khai; repo không có token.
+
 Website profile tĩnh với terminal Plana, hoạt động Discord/Spotify và nhạc nền.
 
 ![Giao diện Pro5 desktop](docs/images/pro5-desktop.png)

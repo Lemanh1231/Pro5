@@ -1,0 +1,62 @@
+defmodule Lanyard.DiscordBot.Commands.ApiKey do
+  alias Lanyard.Connectivity.Redis
+  alias Lanyard.DiscordBot.DiscordApi
+
+  def handle(_, %{"channel_id" => channel_id, "guild_id" => _guild_id} = _p) do
+    DiscordApi.send_message(channel_id, ":x: You can only perform this command in DMs with me")
+  end
+
+  def handle(_, payload) do
+    user_id = payload["author"]["id"]
+    key = generate_api_key(user_id)
+
+    Lanyard.DiscordBot.DiscordApi.send_message(payload["channel_id"], %{
+      title: "Lanyard API Key",
+      description:
+        "**Absolutely do not share or post this key anywhere, it is a secret key that will allow anyone to manage your Lanyard K/V**\n\n**This key is not to be used in a front-end application/website**\n\nIf you are looking for the public endpoint for your data, you would use your discord user ID like so\n#{Application.get_env(:lanyard, :external_url)}/v1/users/#{user_id}",
+      color: 0x5865F2,
+      footer: %{text: "Run this command again if you need to re-generate your key"},
+      fields: [
+        %{name: "Key", value: "||`#{key}`||\n-# *click above to reveal*", inline: false}
+      ]
+    })
+  end
+
+  def contains_api_key?(user_id, candidates) do
+    stored_key = Redis.get("user_api_key:#{user_id}")
+
+    candidates
+    |> List.wrap()
+    |> Enum.any?(&(&1 == stored_key))
+  end
+
+  def generate_and_send_new(original_channel, user_id) do
+    DiscordApi.send_message(
+      original_channel,
+      ":x: Whoops, you just posted your API key, this is meant to stay private, regenerating this for you, check your DM"
+    )
+
+    key = generate_api_key(user_id)
+
+    dm_channel = DiscordApi.create_dm(user_id)
+
+    DiscordApi.send_message(
+      dm_channel,
+      ":repeat: **We've regenerated your api key as you used it in a K/V command.**\nYour new Lanyard API key is `#{key}`\n\n**ABSOLUTELY DO NOT SHARE OR POST THIS KEY ANYWHERE IT WILL ALLOW ANYONE TO MANAGE YOUR LANYARD K/V**\n*Run `.apikey` in this DM if you need to re-generate your key*"
+    )
+  end
+
+  def generate_api_key(user_id) do
+    key = "lnyd_#{:crypto.strong_rand_bytes(16) |> Base.encode16(case: :lower)}"
+
+    existing_key? = Redis.get("user_api_key:#{user_id}")
+
+    if existing_key? do
+      Redis.del("api_key:#{existing_key?}")
+    end
+
+    Redis.mset(["api_key:#{key}", user_id, "user_api_key:#{user_id}", key])
+
+    key
+  end
+end
